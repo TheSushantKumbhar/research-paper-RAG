@@ -209,21 +209,22 @@ export default function ChatPage() {
               ) : messages.length === 0 ? (
                 <div className="flex items-center justify-center h-full">
                   <motion.div
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
                     className="text-center"
                   >
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent-purple/10 to-accent-cyan/10 flex items-center justify-center mx-auto mb-4 border border-white/5">
-                      <Sparkles size={28} className="text-accent-purple" />
+                    <div className="w-12 h-12 flex items-center justify-center mx-auto mb-4 border border-[#262626] bg-[#0a0a0a]">
+                      <Bot size={20} className="text-white" strokeWidth={1.5} />
                     </div>
-                    <h3 className="text-lg font-medium text-white mb-2">Start a conversation</h3>
-                    <p className="text-dark-300 text-sm max-w-sm">
-                      Ask questions about the research papers you've uploaded to this space
+                    <h3 className="text-xl font-serif text-white mb-2">New Thread Started</h3>
+                    <p className="text-stone-400 text-sm max-w-xs mx-auto">
+                      Ask questions about the research papers you have added to this space.
                     </p>
                   </motion.div>
                 </div>
               ) : (
-                <div>
+                <div className="pb-4 pt-8">
                   {messages.map((msg) => (
                     <ChatMessage
                       key={msg.id}
@@ -237,20 +238,22 @@ export default function ChatPage() {
             </div>
 
             {/* Input */}
-            <ChatInput onSend={handleSendQuery} disabled={isStreaming} />
+            <div className="border-t border-[#262626] bg-[#000000]">
+              <ChatInput onSend={handleSendQuery} disabled={isStreaming} />
+            </div>
           </>
         ) : (
-          <div className="flex items-center justify-center h-full">
+          <div className="flex items-center justify-center h-full border-l border-[#262626]">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               className="text-center"
             >
-              <Bot size={40} className="mx-auto mb-4 text-dark-400" />
-              <p className="text-dark-300">
+              <Bot size={32} className="mx-auto mb-4 text-[#404040]" strokeWidth={1} />
+              <p className="text-stone-500 text-xs uppercase tracking-widest">
                 {chats.length === 0
-                  ? 'Create a new chat to get started'
-                  : 'Select a chat from the sidebar'}
+                  ? 'Create a thread'
+                  : 'Select a thread'}
               </p>
             </motion.div>
           </div>

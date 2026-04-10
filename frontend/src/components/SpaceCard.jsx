@@ -1,44 +1,41 @@
 import { motion } from 'framer-motion';
-import { FileText, Calendar } from 'lucide-react';
+import { FileText, ArrowRight } from 'lucide-react';
 
 export default function SpaceCard({ space, onClick, index }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.08, duration: 0.4, ease: 'easeOut' }}
+      transition={{ delay: index * 0.1, duration: 0.8, type: "spring", bounce: 0.4 }}
       onClick={onClick}
-      className="glass-card glass-card-hover rounded-2xl p-6 cursor-pointer group transition-all duration-300"
-      whileHover={{ y: -4, transition: { duration: 0.2 } }}
+      className="p-6 cursor-pointer group flex flex-col h-full bg-[#050505] border border-[#222] rounded-[24px] hover:border-[#444] transition-all hover:elegant-shadow"
     >
-      {/* Glow effect on hover */}
-      <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-accent-purple/5 to-accent-cyan/5 pointer-events-none" />
-
-      <div className="relative">
-        <div className="flex items-start justify-between mb-4">
-          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-accent-purple/20 to-accent-cyan/20 flex items-center justify-center border border-accent-purple/20">
-            <FileText size={20} className="text-accent-purple" />
+      <div className="flex-1">
+        <div className="flex items-start justify-between mb-5">
+          <div className="w-12 h-12 rounded-[16px] border border-[#333] bg-[#121212] flex items-center justify-center text-white">
+            <span className="text-xl font-medium">{space.name.charAt(0)}</span>
           </div>
-          <span className="text-xs text-dark-200 flex items-center gap-1">
-            <Calendar size={12} />
-            {new Date(space.created_at).toLocaleDateString()}
-          </span>
+          <motion.div 
+            className="w-10 h-10 rounded-full bg-white text-black flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all -translate-y-2 group-hover:translate-y-0"
+          >
+            <ArrowRight size={16} strokeWidth={2} />
+          </motion.div>
         </div>
 
-        <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-accent-purple transition-colors">
+        <h3 className="text-xl font-semibold text-white mb-2 line-clamp-1 group-hover:text-stone-200 transition-colors">
           {space.name}
         </h3>
-
+        
         {space.description && (
-          <p className="text-sm text-dark-200 mb-4 line-clamp-2">{space.description}</p>
+          <p className="text-sm text-stone-500 line-clamp-2 leading-relaxed">
+            {space.description}
+          </p>
         )}
+      </div>
 
-        <div className="flex items-center gap-2 text-xs text-dark-100">
-          <div className="flex items-center gap-1 bg-white/5 rounded-lg px-2.5 py-1.5">
-            <FileText size={12} />
-            <span>{space.document_count || 0} papers</span>
-          </div>
-        </div>
+      <div className="mt-8 pt-4 border-t border-[#222] flex items-center gap-2 text-xs font-medium text-stone-500">
+        <FileText size={14} strokeWidth={2} />
+        <span>{space.document_count || 0} Documents</span>
       </div>
     </motion.div>
   );

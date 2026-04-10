@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
-import { User, Bot } from 'lucide-react';
+import { Bot, User } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 import Citations from './Citations';
 
 export default function ChatMessage({ message, isStreaming }) {
@@ -7,39 +8,37 @@ export default function ChatMessage({ message, isStreaming }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, ease: 'easeOut' }}
-      className={`flex gap-4 px-6 py-5 ${isUser ? '' : 'bg-white/[0.015]'}`}
+      className={`py-8 ${isUser ? 'bg-transparent' : 'bg-[#050505] border-y border-[#1a1a1a]'}`}
     >
-      {/* Avatar */}
-      <div
-        className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
-          isUser
-            ? 'bg-accent-blue/15 border border-accent-blue/20'
-            : 'bg-gradient-to-br from-accent-purple/20 to-accent-cyan/20 border border-accent-purple/20'
-        }`}
-      >
-        {isUser ? (
-          <User size={15} className="text-accent-blue" />
-        ) : (
-          <Bot size={15} className="text-accent-purple" />
-        )}
-      </div>
-
-      {/* Content */}
-      <div className="flex-1 min-w-0">
-        <span className={`text-xs font-medium mb-1.5 block ${isUser ? 'text-accent-blue' : 'text-accent-purple'}`}>
-          {isUser ? 'You' : 'Research Assistant'}
-        </span>
-
-        <div className={`text-sm leading-relaxed text-dark-100 whitespace-pre-wrap ${isStreaming ? 'typing-cursor' : ''}`}>
-          {message.content}
+      <div className="max-w-4xl mx-auto flex gap-6 px-6">
+        <div className={`w-10 h-10 rounded-[12px] flex-shrink-0 flex items-center justify-center border ${
+          isUser 
+            ? 'border-[#333] bg-[#111] text-stone-300' 
+            : 'border-white bg-white text-black elegant-shadow'
+        }`}>
+          {isUser ? <User size={18} strokeWidth={2} /> : <Bot size={18} strokeWidth={2} />}
         </div>
+        
+        <div className="flex-1 min-w-0 pt-1 leading-relaxed">
+          <div className="prose prose-invert prose-stone max-w-none prose-p:leading-loose prose-pre:bg-[#111] prose-pre:border prose-pre:border-[#222] prose-pre:rounded-[12px]">
+            {message.content ? (
+              <ReactMarkdown>{message.content}</ReactMarkdown>
+            ) : isStreaming ? (
+              <div className="typing-cursor h-6" />
+            ) : null}
+          </div>
 
-        {!isUser && !isStreaming && message.citations && (
-          <Citations citations={message.citations} />
-        )}
+          {!isUser && message.citations?.length > 0 && (
+            <div className="mt-8 pt-6">
+              <span className="block text-sm font-semibold text-stone-400 mb-4">
+                Sources from your Knowledge Base
+              </span>
+              <Citations citations={message.citations} />
+            </div>
+          )}
+        </div>
       </div>
     </motion.div>
   );
