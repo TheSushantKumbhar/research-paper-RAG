@@ -1,66 +1,58 @@
-import { MessageSquare, Plus, Trash2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { MessageSquare, Plus, Trash2 } from 'lucide-react';
 
 export default function ChatSidebar({ chats, activeChatId, onSelectChat, onNewChat, onDeleteChat }) {
   return (
-    <div className="w-72 border-r border-[#222] bg-[#050505] flex flex-col pt-4">
-      <div className="px-4 pb-4 border-b border-[#222]">
-        <button
+    <div className="w-72 h-full border-r border-white/5 flex flex-col bg-dark-900/50">
+      {/* Header */}
+      <div className="p-4 border-b border-white/5">
+        <motion.button
           onClick={onNewChat}
-          className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-white/5 border border-[#333] text-sm text-stone-200 hover:bg-white hover:text-black transition-all rounded-[12px] elegant-shadow hover:-translate-y-[1px]"
+          className="btn-primary w-full !text-sm"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
         >
-          <Plus size={16} strokeWidth={2} />
-          <span className="font-medium">New Thread</span>
-        </button>
+          <Plus size={16} />
+          New Chat
+        </motion.button>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-2 py-3 space-y-1">
+      {/* Chat List */}
+      <div className="flex-1 overflow-y-auto p-2">
         <AnimatePresence mode="popLayout">
           {chats.map((chat) => (
             <motion.div
-              layout
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
               key={chat.id}
-              onClick={() => onSelectChat(chat.id)}
-              className={`flex items-center justify-between px-3 py-2.5 cursor-pointer group transition-all rounded-[12px] ${
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className={`group flex items-center gap-2 rounded-xl px-3 py-2.5 mb-1 cursor-pointer transition-all duration-200 ${
                 activeChatId === chat.id
-                  ? 'bg-[#1a1a1a] border border-[#333] text-white shadow-sm'
-                  : 'border border-transparent text-stone-400 hover:bg-[#111] hover:text-stone-200'
+                  ? 'bg-accent-purple/10 border border-accent-purple/20 text-white'
+                  : 'hover:bg-white/5 text-dark-100 hover:text-white border border-transparent'
               }`}
+              onClick={() => onSelectChat(chat.id)}
             >
-              <div className="flex items-center gap-3 min-w-0">
-                <MessageSquare size={16} className={`shrink-0 ${activeChatId === chat.id ? 'text-white' : 'text-stone-500'}`} strokeWidth={1.5} />
-                <span className="text-sm font-medium truncate">{chat.title || 'New Chat'}</span>
-              </div>
-
+              <MessageSquare size={14} className="shrink-0" />
+              <span className="flex-1 text-sm truncate">{chat.title}</span>
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   onDeleteChat(chat.id);
                 }}
-                className={`opacity-0 group-hover:opacity-100 p-1.5 rounded-md hover:bg-red-500/10 text-stone-500 hover:text-red-500 transition-all ${
-                  activeChatId === chat.id ? 'opacity-40' : ''
-                }`}
+                className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:text-red-400"
               >
-                <Trash2 size={14} strokeWidth={2} />
+                <Trash2 size={12} />
               </button>
             </motion.div>
           ))}
         </AnimatePresence>
 
         {chats.length === 0 && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center px-4 py-12 text-stone-500 flex flex-col items-center"
-          >
-            <div className="w-12 h-12 rounded-full border border-[#222] bg-[#111] flex items-center justify-center mb-3">
-              <MessageSquare size={16} className="opacity-50" />
-            </div>
-            <p className="text-sm">No recent threads.</p>
-          </motion.div>
+          <div className="text-center py-8 text-dark-300 text-sm">
+            <MessageSquare size={24} className="mx-auto mb-2 opacity-50" />
+            No conversations yet
+          </div>
         )}
       </div>
     </div>

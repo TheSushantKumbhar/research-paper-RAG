@@ -47,54 +47,54 @@ export default function SpaceView() {
   }
 
   const tabClass = (isActive) =>
-    `flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all duration-200 border-b-2 ${
+    `flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
       isActive
-        ? 'border-white text-white'
-        : 'border-transparent text-stone-500 hover:text-stone-300'
+        ? 'bg-accent-purple/15 text-accent-purple border border-accent-purple/20'
+        : 'text-dark-200 hover:text-white hover:bg-white/5 border border-transparent'
     }`;
 
   return (
-    <div className="flex flex-col h-[calc(100vh-64px)] w-full max-w-[1600px] mx-auto">
+    <div className="flex flex-col h-[calc(100vh-65px)]">
       {/* Space Header */}
-      <div className="border-b border-[#222] px-6 py-3 flex items-center justify-between bg-[#0a0a0a]">
-        <div className="flex items-center gap-6">
-          <button
+      <div className="border-b border-white/5 px-6 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <motion.button
             onClick={() => navigate('/spaces')}
-            className="text-stone-500 hover:text-white transition-colors flex items-center gap-1 text-xs uppercase tracking-widest"
+            className="text-dark-200 hover:text-white transition-colors"
+            whileHover={{ x: -2 }}
           >
-            <ArrowLeft size={14} className="mr-1"/>
-            Back
-          </button>
+            <ArrowLeft size={18} />
+          </motion.button>
 
-          <div className="border-l border-[#222] pl-6">
+          <div>
             <h2 className="font-semibold text-white text-lg">{space?.name}</h2>
+            {space?.description && (
+              <p className="text-xs text-dark-300 mt-0.5">{space.description}</p>
+            )}
           </div>
         </div>
 
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-3">
           {/* Tabs */}
-          <nav className="flex gap-4">
+          <nav className="flex gap-2">
             <NavLink to={`/spaces/${spaceId}/chat`} className={({ isActive }) => tabClass(isActive)}>
-              <MessageSquare size={14} strokeWidth={2}/>
+              <MessageSquare size={15} />
               Chat
             </NavLink>
             <NavLink to={`/spaces/${spaceId}/documents`} className={({ isActive }) => tabClass(isActive)}>
-              <FileText size={14} strokeWidth={2} />
+              <FileText size={15} />
               Documents
             </NavLink>
           </nav>
 
-          <div className="border-l border-[#222] pl-6">
-            <button onClick={handleDelete} className="text-xs uppercase tracking-widest text-red-500/70 hover:text-red-500 flex items-center gap-1 transition-colors">
-              <Trash2 size={13} strokeWidth={2}/>
-              Delete
-            </button>
-          </div>
+          <button onClick={handleDelete} className="btn-danger !py-1.5 !px-2.5">
+            <Trash2 size={13} />
+          </button>
         </div>
       </div>
 
       {/* Page Content */}
-      <div className="flex-1 overflow-hidden relative">
+      <div className="flex-1 overflow-hidden">
         <Outlet context={{ space, spaceId }} />
       </div>
     </div>

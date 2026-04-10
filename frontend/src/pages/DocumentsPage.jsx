@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Upload, FileText, Trash2, Check, Loader, AlertCircle } from 'lucide-react';
+import { Upload, FileText, Trash2, CheckCircle, Loader, AlertCircle } from 'lucide-react';
 import { documentsAPI } from '../api/client';
 
 export default function DocumentsPage() {
@@ -35,7 +35,7 @@ export default function DocumentsPage() {
     }
 
     setUploading(true);
-    setUploadProgress('Processing document...');
+    setUploadProgress('Uploading and processing...');
 
     try {
       const doc = await documentsAPI.upload(spaceId, file);
@@ -77,16 +77,15 @@ export default function DocumentsPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-12">
+    <div className="max-w-4xl mx-auto px-6 py-8">
       {/* Upload Area */}
       <motion.div
-        initial={{ opacity: 0, y: 15 }}
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, type: "spring", bounce: 0.4 }}
-        className={`border-[1.5px] border-dashed p-12 text-center transition-all duration-300 cursor-pointer mb-12 bg-[#050505] rounded-[24px] ${
+        className={`border-2 border-dashed rounded-2xl p-10 text-center transition-all duration-300 cursor-pointer mb-8 ${
           dragOver
-            ? 'border-white bg-[#111]'
-            : 'border-[#333] hover:border-[#555] hover:bg-[#0a0a0a]'
+            ? 'border-accent-purple bg-accent-purple/5'
+            : 'border-white/10 hover:border-accent-purple/30 hover:bg-white/[0.02]'
         }`}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
@@ -106,25 +105,25 @@ export default function DocumentsPage() {
         />
 
         {uploading ? (
-          <div className="flex flex-col items-center gap-4 py-4">
-            <Loader size={24} className="text-white animate-spin" strokeWidth={2} />
-            <p className="text-sm font-semibold text-white">{uploadProgress}</p>
-            <p className="text-xs text-stone-500">
-              Extracting text and generating vector embeddings
+          <div className="flex flex-col items-center gap-3">
+            <Loader size={32} className="text-accent-purple animate-spin" />
+            <p className="text-sm text-dark-100">{uploadProgress}</p>
+            <p className="text-xs text-dark-300">
+              Extracting text, generating embeddings, and storing vectors...
             </p>
           </div>
         ) : (
-          <div className="py-2">
-            <div className="w-14 h-14 rounded-full border border-[#333] bg-[#111] flex items-center justify-center mx-auto mb-6">
-              <Upload size={20} className="text-stone-300" strokeWidth={2}/>
+          <>
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-accent-purple/15 to-accent-cyan/15 flex items-center justify-center mx-auto mb-4 border border-white/5">
+              <Upload size={24} className="text-accent-purple" />
             </div>
-            <p className="text-xl font-bold text-white mb-2 tracking-tight">
-              Upload Research Paper
+            <p className="text-white font-medium mb-1">
+              Drop a PDF here or click to browse
             </p>
-            <p className="text-stone-500 text-sm">
-              Drag & drop a PDF file here or click to browse
+            <p className="text-dark-300 text-sm">
+              PDFs will be chunked and embedded for semantic search
             </p>
-          </div>
+          </>
         )}
       </motion.div>
 
@@ -132,76 +131,72 @@ export default function DocumentsPage() {
       <AnimatePresence>
         {uploadProgress && !uploading && uploadProgress.startsWith('Error') && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="mb-8 bg-red-950/30 border border-red-900 rounded-2xl p-4 flex items-center gap-3 text-sm font-medium text-red-400"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className="mb-6 bg-red-500/10 border border-red-500/20 rounded-xl p-3 flex items-center gap-2 text-sm text-red-400"
           >
-            <AlertCircle size={16} strokeWidth={2} />
-            <span>{uploadProgress}</span>
+            <AlertCircle size={16} />
+            {uploadProgress}
           </motion.div>
         )}
       </AnimatePresence>
 
       {/* Documents List */}
-      <div className="border-t border-[#222] pt-8">
-        <h3 className="text-sm font-semibold text-stone-400 mb-6 flex items-center gap-2">
-          Knowledge Base 
-          <span className="px-2 py-0.5 bg-[#111] border border-[#333] text-stone-300 rounded-full text-[10px]">
-            {documents.length}
-          </span>
+      <div>
+        <h3 className="text-lg font-semibold text-white mb-4">
+          Uploaded Papers ({documents.length})
         </h3>
 
         {loading ? (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {[1, 2].map((i) => (
-              <div key={i} className="skeleton h-20 rounded-2xl" />
+              <div key={i} className="skeleton h-20 rounded-xl" />
             ))}
           </div>
         ) : documents.length === 0 ? (
-          <div className="text-center py-16 border border-[#222] border-dashed rounded-2xl">
-            <p className="text-stone-500 text-sm font-medium">No documents uploaded to this space yet.</p>
+          <div className="text-center py-12 text-dark-300 text-sm">
+            <FileText size={32} className="mx-auto mb-3 opacity-40" />
+            <p>No documents uploaded yet</p>
+            <p className="text-xs mt-1">Upload research papers to build your knowledge base</p>
           </div>
         ) : (
           <AnimatePresence mode="popLayout">
-            <div className="space-y-3">
-              {documents.map((doc, i) => (
-                <motion.div
-                  key={doc.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  transition={{ delay: i * 0.05, duration: 0.3 }}
-                  className="group flex items-center justify-between p-4 border border-[#222] bg-[#050505] rounded-[16px] hover:border-[#444] transition-all hover:bg-[#0a0a0a]"
-                >
-                  <div className="flex items-center gap-4 min-w-0">
-                    <div className="w-10 h-10 rounded-[10px] border border-[#333] bg-[#111] flex items-center justify-center shrink-0">
-                      <FileText size={16} className="text-stone-300" strokeWidth={2}/>
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-sm font-semibold text-white truncate mb-1 pr-4">{doc.filename}</p>
-                      <div className="flex items-center gap-4">
-                        <span className="text-xs text-stone-500 flex items-center gap-1 font-medium">
-                          <Check size={12} className="text-green-500" strokeWidth={3}/>
-                          {doc.num_chunks} chunks
-                        </span>
-                        <span className="text-xs text-stone-600 font-medium tracking-wide">
-                          {new Date(doc.uploaded_at).toLocaleDateString()}
-                        </span>
-                      </div>
+            {documents.map((doc, i) => (
+              <motion.div
+                key={doc.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ delay: i * 0.05 }}
+                className="glass-card rounded-xl p-4 mb-3 flex items-center justify-between group"
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center border border-red-500/15 shrink-0">
+                    <FileText size={18} className="text-red-400" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-white truncate">{doc.filename}</p>
+                    <div className="flex items-center gap-3 mt-0.5">
+                      <span className="text-xs text-dark-300 flex items-center gap-1">
+                        <CheckCircle size={11} className="text-green-500" />
+                        {doc.num_chunks} chunks
+                      </span>
+                      <span className="text-xs text-dark-400">
+                        {new Date(doc.uploaded_at).toLocaleDateString()}
+                      </span>
                     </div>
                   </div>
+                </div>
 
-                  <button
-                    onClick={() => handleDelete(doc.id)}
-                    className="opacity-0 group-hover:opacity-100 text-stone-500 hover:text-red-500 p-2 transition-all block max-md:opacity-100 hover:bg-red-500/10 rounded-lg"
-                    title="Delete document"
-                  >
-                    <Trash2 size={16} strokeWidth={2}/>
-                  </button>
-                </motion.div>
-              ))}
-            </div>
+                <button
+                  onClick={() => handleDelete(doc.id)}
+                  className="opacity-0 group-hover:opacity-100 transition-opacity btn-danger !py-1.5"
+                >
+                  <Trash2 size={13} />
+                </button>
+              </motion.div>
+            ))}
           </AnimatePresence>
         )}
       </div>

@@ -1,41 +1,55 @@
 import { motion } from 'framer-motion';
-import { ExternalLink } from 'lucide-react';
+import { BookOpen, ChevronDown, ChevronUp } from 'lucide-react';
+import { useState } from 'react';
 
 export default function Citations({ citations }) {
+  const [expanded, setExpanded] = useState(false);
+
   if (!citations || citations.length === 0) return null;
 
   return (
-    <div className="grid grid-cols-1 mb-8 gap-3">
-      {citations.map((cite, index) => (
-        <motion.div 
-          key={index}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: index * 0.1, type: "spring" }}
-          className="group relative"
-        >
-          {/* Subtle glow border effect */}
-          <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent rounded-[16px] opacity-0 group-hover:opacity-100 transition-opacity blur-sm pointer-events-none" />
-          
-          <div className="relative bg-[#050505] border border-[#222] p-5 rounded-[16px] group-hover:border-[#444] transition-all hover:elegant-shadow flex items-start gap-4">
-            <div className="w-8 h-8 rounded-full border border-[#333] bg-[#1a1a1a] flex-shrink-0 flex items-center justify-center text-stone-400 group-hover:text-white transition-colors">
-              <span className="text-xs font-semibold">{index + 1}</span>
-            </div>
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.2, duration: 0.3 }}
+      className="mt-3"
+    >
+      <button
+        onClick={() => setExpanded(!expanded)}
+        className="flex items-center gap-2 text-xs font-medium text-accent-purple hover:text-accent-cyan transition-colors"
+      >
+        <BookOpen size={13} />
+        <span>{citations.length} source{citations.length > 1 ? 's' : ''} cited</span>
+        {expanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+      </button>
 
-            <div className="flex-1 min-w-0 pt-1">
-              <div className="flex items-center justify-between gap-4 mb-2">
-                <h4 className="text-sm font-semibold text-white truncate pr-4">
-                  {cite.paper_name}
-                </h4>
-                <ExternalLink size={14} className="text-stone-600 group-hover:text-stone-300 transition-colors shrink-0" />
+      <motion.div
+        initial={false}
+        animate={{ height: expanded ? 'auto' : 0, opacity: expanded ? 1 : 0 }}
+        transition={{ duration: 0.3, ease: 'easeInOut' }}
+        className="overflow-hidden"
+      >
+        <div className="mt-2 space-y-2">
+          {citations.map((citation, i) => (
+            <div
+              key={i}
+              className="glass-card rounded-xl p-3 text-xs"
+            >
+              <div className="flex items-center gap-2 mb-1.5">
+                <div className="w-5 h-5 rounded-md bg-accent-purple/15 flex items-center justify-center text-[10px] font-bold text-accent-purple">
+                  {i + 1}
+                </div>
+                <span className="font-semibold text-accent-cyan truncate">
+                  {citation.paper_name}
+                </span>
               </div>
-              <p className="text-sm text-stone-400 leading-relaxed italic border-l-2 border-[#333] pl-4 py-1">
-                "{cite.text.trim()}"
+              <p className="text-dark-200 leading-relaxed pl-7">
+                "{citation.snippet}"
               </p>
             </div>
-          </div>
-        </motion.div>
-      ))}
-    </div>
+          ))}
+        </div>
+      </motion.div>
+    </motion.div>
   );
 }

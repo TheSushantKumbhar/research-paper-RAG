@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { motion } from 'framer-motion';
-import { Layers } from 'lucide-react';
+import { Layers, UserPlus } from 'lucide-react';
 
 export default function SignupPage() {
   const [email, setEmail] = useState('');
@@ -29,71 +29,71 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-black bg-dots">
-      <div className="w-full max-w-sm relative z-10">
-        {/* Header */}
+    <div className="min-h-screen gradient-bg flex items-center justify-center px-4">
+      <div className="relative z-10 w-full max-w-md">
+        {/* Logo */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, type: "spring", bounce: 0.4 }}
-          className="mb-10 text-center"
+          className="text-center mb-8"
         >
-          <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto mb-6 elegant-shadow shadow-white/10">
-            <Layers className="text-black" size={24} />
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-accent-purple to-accent-cyan flex items-center justify-center mx-auto mb-4">
+            <Layers size={28} className="text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2 tracking-tight">Create an account</h1>
-          <p className="text-stone-400 text-sm">Join Research Spaces</p>
+          <h1 className="text-2xl font-bold gradient-text">Research Spaces</h1>
+          <p className="text-dark-200 text-sm mt-1">Create your account</p>
         </motion.div>
 
         {/* Form Card */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.1, duration: 0.6, type: "spring" }}
-          className="bg-[#050505] border border-[#222] rounded-[24px] p-8 elegant-shadow"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="glass-card rounded-2xl p-8"
         >
           <form onSubmit={handleSubmit} className="space-y-5">
             {error && (
               <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                className="text-red-400 text-sm text-center bg-red-950/30 py-3 rounded-xl border border-red-900/50"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="bg-red-500/10 border border-red-500/20 rounded-xl p-3 text-red-400 text-sm"
               >
                 {error}
               </motion.div>
             )}
 
             <div>
-              <label className="block text-xs font-medium text-stone-400 mb-2">Name</label>
+              <label className="block text-sm font-medium text-dark-100 mb-2">Username</label>
               <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
-                placeholder="Researcher"
+                placeholder="johndoe"
                 className="input-field"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-stone-400 mb-2">Email address</label>
+              <label className="block text-sm font-medium text-dark-100 mb-2">Email</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                placeholder="email@example.com"
+                placeholder="you@example.com"
                 className="input-field"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-stone-400 mb-2">Password</label>
+              <label className="block text-sm font-medium text-dark-100 mb-2">Password</label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                minLength={6}
                 placeholder="••••••••"
                 className="input-field"
               />
@@ -102,21 +102,24 @@ export default function SignupPage() {
             <button
               type="submit"
               disabled={loading}
-              className="btn-primary w-full mt-2 !py-3 rounded-[12px]"
+              className="btn-primary w-full"
             >
               {loading ? (
                 <div className="loading-dots">
                   <span></span><span></span><span></span>
                 </div>
               ) : (
-                'Create Account'
+                <>
+                  <UserPlus size={16} />
+                  Create Account
+                </>
               )}
             </button>
           </form>
 
-          <p className="text-center text-sm text-stone-500 mt-6">
+          <p className="text-center text-sm text-dark-200 mt-6">
             Already have an account?{' '}
-            <Link to="/login" className="text-white hover:text-stone-300 transition-colors font-medium">
+            <Link to="/login" className="text-accent-purple hover:text-accent-cyan transition-colors font-medium">
               Sign In
             </Link>
           </p>
